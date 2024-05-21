@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descargar Imagen</title>
+</head>
+<body>
+    <button onclick="downloadImage()">Descargar Imagen</button>
+    <script>
+    async function downloadImage() {
+        const url = 'https://nice-try.fckthots.xyz/lgnK8QGnpbcVNASI/GG88d0EXIAEh-EI64f242bffcdd9865.md.jpg';
+        try {
+            const imageResponse = await fetch(url);
+            if (!imageResponse.ok) throw new Error(`Failed to fetch image: ${url}`);
+            const blob = await imageResponse.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = 'image.jpg'; // Nombre fijo para la imagen descargada
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(blobUrl); // Liberar la memoria
+        } catch (imageError) {
+            console.error(`Error al descargar la imagen ${url}:`, imageError);
+        }
+    }
+    </script>
+</body>
+</html>
