@@ -1,11 +1,38 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Descargar Imagen</title>
-</head>
-<body>
-    <a href="https://nice-try.fckthots.xyz/lgnK8QGnpbcVNASI/GG88d0EXIAEh-EI64f242bffcdd9865.md.jpg" download>Descargame webón</a>
-</body>
-</html>
+<button onclick="downloadImages()">Descargar Imágenes</button>
+    <script>
+    async function downloadImages() {
+        const jsonUrl = 'https://cdn.jsdelivr.net/gh/shases/sano/fape.json';
+        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+
+        try {
+            // Obtener el archivo JSON a través del proxy CORS
+            const response = await fetch(proxyUrl + jsonUrl);
+            if (!response.ok) throw new Error('Error al obtener el archivo JSON');
+            const imageUrls = await response.json();
+
+            for (let url of imageUrls) {
+                try {
+                    // Descargar cada imagen a través del proxy CORS
+                    const imageResponse = await fetch(proxyUrl + url);
+                    if (!imageResponse.ok) throw new Error(`Failed to fetch image: ${url}`);
+                    const blob = await imageResponse.blob();
+                    const blobUrl = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.download = url.split('/').pop();
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(blobUrl); // Liberar la memoria
+
+                    // Pequeño retraso para evitar bloqueos por descarga masiva
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                } catch (imageError) {
+                    console.error(`Error al descargar la imagen ${url}:`, imageError);
+                }
+            }
+        } catch (error) {
+            console.error('Error al descargar las imágenes:', error);
+        }
+    }
+    </script>
